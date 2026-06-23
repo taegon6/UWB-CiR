@@ -12,6 +12,12 @@ Codex가 이 저장소를 작업할 때의 우선 목표는 다음과 같습니�
 4. 저장된 CIR을 baseline anomaly detector에 연결한다.
 5. anomaly가 발생하면 camera event 또는 vision verification 단계로 넘긴다.
 
+## Intermediate target
+
+현재 중간 목표는 **고양이 크기 객체(cat-sized object)** 감지입니다.
+
+동전, 나사 같은 초소형 FOD는 UWB와 카메라 양쪽에서 난이도가 높으므로 첫 목표로 삼지 않습니다. 먼저 고양이 크기 객체에서 CIR 변화가 안정적으로 나타나는지 확인합니다. 자세한 실험 단계는 `docs/experiment_targets.md`를 따릅니다.
+
 ## Current architecture
 
 ```text
@@ -39,18 +45,6 @@ DW3000 / DWM3000 UWB module
 ```
 
 따라서 Codex는 먼저 실험 환경에서 사용 가능한 serial port를 확인해야 합니다.
-
-Linux/macOS 예시:
-
-```bash
-python scripts/list_serial_ports.py
-```
-
-Windows 예시:
-
-```powershell
-python scripts/list_serial_ports.py
-```
 
 ## Expected serial protocols
 
@@ -102,25 +96,31 @@ python scripts/run_anomaly_trigger.py --demo
 
 ## First tasks for Codex in the lab
 
-1. `python scripts/list_serial_ports.py`로 포트를 찾는다.
+1. serial port를 확인한다.
 2. UWB board가 출력하는 한 줄의 raw serial sample을 확인한다.
 3. JSON 또는 CSV parser가 맞는지 확인한다.
 4. 다음 명령으로 정상 상태 baseline 데이터를 저장한다.
 
 ```bash
-python scripts/collect_dw3000_serial.py --port <PORT> --baudrate 115200 --output data/raw/baseline_room_empty.csv --max-samples 300
+python scripts/collect_dw3000_serial.py --port <PORT> --baudrate 115200 --output data/raw/normal_empty.csv --max-samples 300
 ```
 
-5. 고양이/사람/물체가 지나가는 상황 데이터를 저장한다.
+5. 고양이 크기 객체가 정지한 상황 데이터를 저장한다.
 
 ```bash
-python scripts/collect_dw3000_serial.py --port <PORT> --baudrate 115200 --output data/raw/object_motion.csv --max-samples 300
+python scripts/collect_dw3000_serial.py --port <PORT> --baudrate 115200 --output data/raw/cat_static.csv --max-samples 300
 ```
 
-6. baseline 기반 anomaly detector를 실행한다.
+6. 고양이 크기 객체가 움직이는 상황 데이터를 저장한다.
 
 ```bash
-python scripts/run_anomaly_trigger.py --input data/raw/object_motion.csv --baseline-rows 50 --threshold 0.2 --method l2
+python scripts/collect_dw3000_serial.py --port <PORT> --baudrate 115200 --output data/raw/cat_moving.csv --max-samples 300
+```
+
+7. baseline 기반 anomaly detector를 실행한다.
+
+```bash
+python scripts/run_anomaly_trigger.py --input data/raw/cat_moving.csv --baseline-rows 50 --threshold 0.2 --method l2
 ```
 
 ## When blocked
@@ -129,3 +129,4 @@ python scripts/run_anomaly_trigger.py --input data/raw/object_motion.csv --basel
 - 데이터가 깨지면 `--raw-log` 옵션으로 원본 라인을 저장하고 parser를 수정합니다.
 - CIR 길이가 매번 다르면 가장 흔한 길이를 기준으로 padding/truncation 정책을 명시적으로 구현합니다.
 - threshold가 너무 민감하면 `method=cosine` 또는 `method=energy`도 비교합니다.
+- 고양이 크기 객체에서 변화가 약하면 UWB 송수신기 위치를 낮추고, 객체가 링크 근처를 지나가도록 실험 배치를 조정합니다.
