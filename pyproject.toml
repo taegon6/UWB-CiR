@@ -1,0 +1,9 @@
+[project]
+name = "uwb-cir"
+version = "0.1.0"
+description = "UWB CIR anomaly detection and event-triggered camera activation"
+requires-python = ">=3.9"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
