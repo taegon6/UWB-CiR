@@ -21,6 +21,12 @@ def main() -> None:
     parser.add_argument("--max-samples", type=int, default=100)
     parser.add_argument("--timeout", type=float, default=2.0)
     parser.add_argument("--raw-log", type=Path, default=None)
+    parser.add_argument(
+        "--idle-timeout",
+        type=float,
+        default=None,
+        help="Stop if no serial bytes are received for this many seconds",
+    )
     args = parser.parse_args()
 
     frames = read_frames_from_serial(
@@ -29,7 +35,14 @@ def main() -> None:
         max_samples=args.max_samples,
         timeout=args.timeout,
         raw_log=args.raw_log,
+        idle_timeout=args.idle_timeout,
     )
+    if not frames:
+        raw_hint = f" Raw log: {args.raw_log}" if args.raw_log else ""
+        raise SystemExit(
+            f"No parseable CIR frames received from {args.port} at {args.baudrate} baud."
+            f"{raw_hint}"
+        )
     timestamps, matrix = frames_to_matrix(frames)
     save_cir_csv(args.output, matrix, timestamps=timestamps)
     print(f"saved {len(matrix)} CIR frames to {args.output}")
