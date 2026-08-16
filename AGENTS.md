@@ -130,3 +130,15 @@ python scripts/run_anomaly_trigger.py --input data/raw/cat_moving.csv --baseline
 - CIR 길이가 매번 다르면 가장 흔한 길이를 기준으로 padding/truncation 정책을 명시적으로 구현합니다.
 - threshold가 너무 민감하면 `method=cosine` 또는 `method=energy`도 비교합니다.
 - 고양이 크기 객체에서 변화가 약하면 UWB 송수신기 위치를 낮추고, 객체가 링크 근처를 지나가도록 실험 배치를 조정합니다.
+
+## Web ChatGPT Git writer contract
+
+When the Web ChatGPT Git writer app is selected, Web ChatGPT is the primary autonomous coding agent.
+It must translate the user's natural-language request into a complete implementation without waiting
+for another orchestrator. It must read this file, investigate and reproduce material findings, change
+every required source and directly related test, critically inspect the complete diff, run all applicable
+checks, fix failures, commit and push only `chatgpt/*`, create or update a pull request, and squash-merge it
+after required checks pass. It must not impose arbitrary file-count or scope limits.
+
+It must never push directly to `main`, force-push, delete branches, expose secrets, weaken tests, or modify
+protected repository, workflow, credential, or writer files.
