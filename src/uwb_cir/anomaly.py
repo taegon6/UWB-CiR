@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from .features import cosine_similarity, l2_distance, total_energy
+from .features import as_array, cosine_similarity, l2_distance, total_energy
 
 
 @dataclass
@@ -28,14 +28,14 @@ class BaselineAnomalyDetector:
     method: str = "l2"
 
     def __post_init__(self) -> None:
-        self.baseline = np.asarray(self.baseline, dtype=float)
+        self.baseline = as_array(self.baseline)
         if self.baseline.ndim != 1:
             raise ValueError("baseline must be 1D")
         if self.method not in {"l2", "cosine", "energy"}:
             raise ValueError("method must be one of: l2, cosine, energy")
 
     def score(self, current: np.ndarray | list[float]) -> float:
-        current_arr = np.asarray(current, dtype=float)
+        current_arr = as_array(current)
         if current_arr.shape != self.baseline.shape:
             raise ValueError("current CIR must have the same shape as baseline")
 

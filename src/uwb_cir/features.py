@@ -4,10 +4,14 @@ import numpy as np
 
 
 def as_array(cir: np.ndarray | list[float]) -> np.ndarray:
-    """Convert a CIR sequence to a 1D float numpy array."""
+    """Convert a non-empty, finite CIR sequence to a 1D float array."""
     arr = np.asarray(cir, dtype=float)
     if arr.ndim != 1:
         raise ValueError("CIR must be a 1D sequence")
+    if arr.size == 0:
+        raise ValueError("CIR must not be empty")
+    if not np.all(np.isfinite(arr)):
+        raise ValueError("CIR values must be finite")
     return arr
 
 
