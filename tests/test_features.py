@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 
 from uwb_cir.anomaly import BaselineAnomalyDetector
 from uwb_cir.features import cosine_similarity, l2_distance, peak_count, total_energy
@@ -28,3 +29,26 @@ def test_baseline_anomaly_detector():
     detector = BaselineAnomalyDetector(baseline=baseline, threshold=1.0, method="l2")
     result = detector.predict(current)
     assert result.is_anomaly is True
+
+
+@pytest.mark.parametrize("invalid_value", [np.nan, np.inf, -np.inf])
+def test_cir_features_reject_non_finite_values(invalid_value):
+    with pytest.raises(ValueError, match="finite"):
+        total_energy([1.0, invalid_value, 2.0])
+
+
+def test_cir_features_reject_empty_sequences():
+    with pytest.raises(ValueError, match="empty"):
+        total_energy([])
+
+
+def test_baseline_detector_rejects_non_finite_values():
+    with pytest.raises(ValueError, match="finite"):
+        BaselineAnomalyDetector(baseline=[1.0, np.nan, 2.0])
+
+
+def test_baseline_detector_rejects_non_finite_current():
+    detector = BaselineAnomalyDetector(baseline=[1.0, 2.0, 3.0])
+
+    with pytest.raises(ValueError, match="finite"):
+        detector.predict([1.0, np.inf, 3.0])
