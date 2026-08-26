@@ -1,0 +1,24 @@
+{
+  "anchors": {"A1": [-1.0, 0.0], "A2": [1.0, 0.0]},
+  "charuco": {
+    "squares_x": 5,
+    "squares_y": 7,
+    "square_length_m": 0.035,
+    "marker_length_m": 0.025,
+    "dictionary": "DICT_5X5_100"
+  },
+  "vehicle": {
+    "reference_name": "T1_T2_midpoint",
+    "board_center_to_vehicle_x_m": 0.0,
+    "board_center_to_vehicle_y_m": 0.0,
+    "board_to_vehicle_yaw_deg": 0.0,
+    "length_m": 4.42,
+    "width_m": 1.83
+  },
+  "plot": {
+    "vehicle_footprint_count": 6,
+    "axis_padding_m": 0.5,
+    "show_mode_switches": true
+  },
+  "sync": {"uwb_time_offset_s": 0.0}
+}
