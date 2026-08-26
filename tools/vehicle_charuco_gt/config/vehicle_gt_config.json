@@ -13,12 +13,15 @@
     "board_center_to_vehicle_y_m": 0.0,
     "board_to_vehicle_yaw_deg": 0.0,
     "length_m": 4.42,
-    "width_m": 1.83
+    "width_m": 1.83,
+    "reference_to_body_center_x_m": 0.0,
+    "reference_to_body_center_y_m": 2.21
   },
   "plot": {
     "vehicle_footprint_count": 6,
     "axis_padding_m": 0.5,
-    "show_mode_switches": true
+    "show_mode_switches": true,
+    "gt_max_interp_gap_s": 0.20
   },
   "sync": {"uwb_time_offset_s": 0.0}
 }
