@@ -28,8 +28,8 @@ end
 anchors = [cfg.anchors.A1(:)'; cfg.anchors.A2(:)'];
 figure('Color','w','Name','Vehicle trajectory'); hold on; grid on; axis equal; box on;
 plot(anchors(:,1),anchors(:,2),'k^','MarkerFaceColor','k','MarkerSize',8,'DisplayName','Anchor');
-plot(gt.x,gt.y,'r--','LineWidth',1.7,'DisplayName','ChArUco GT');
-if hasUwb, plot(uwb.x,uwb.y,'b-','LineWidth',1.3,'DisplayName','UWB estimate'); end
+plot(gt.x,gt.y,'k-.','LineWidth',1.7,'DisplayName','Camera/ChArUco GT');
+if hasUwb, plot(uwb.x,uwb.y,'b-','LineWidth',1.3,'DisplayName','UWB SS/DS/Phase'); end
 idx = unique(round(linspace(1,height(gt),min(cfg.plot.vehicle_footprint_count,height(gt)))));
 for k = idx(:)'
     drawVehicle(gt.x(k),gt.y(k),gt.yaw(k),cfg.vehicle.length_m,cfg.vehicle.width_m);
@@ -42,7 +42,7 @@ if hasUwb && cfg.plot.show_mode_switches
         text(uwb.x(k),uwb.y(k),"  "+m(k-1)+"->"+m(k),'FontSize',9);
     end
 end
-xlabel('x (m)'); ylabel('y (m)'); title('Vehicle trajectory: ChArUco GT vs UWB'); legend('Location','best');
+xlabel('x (m)'); ylabel('y (m)'); title('Vehicle trajectory: Camera/ChArUco GT vs UWB'); legend('Location','best');
 allx=[gt.x;anchors(:,1)]; ally=[gt.y;anchors(:,2)];
 if hasUwb, allx=[allx;uwb.x]; ally=[ally;uwb.y]; end
 p=cfg.plot.axis_padding_m; xlim([min(allx)-p max(allx)+p]); ylim([min(ally)-p max(ally)+p]);
